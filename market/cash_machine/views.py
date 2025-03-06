@@ -1,10 +1,15 @@
+import base64
 import random
 from datetime import datetime
+import io
 
 import pdfkit
+import qrcode
+from django.core.files.storage import default_storage
+from django.http import HttpResponse, FileResponse
 from django.template import engines
 from rest_framework.response import Response
-from django.shortcuts import render
+
 from rest_framework.decorators import api_view
 
 from .models import Item
@@ -63,11 +68,30 @@ def make_receipts(request):
         "margin-left": "1.75in",
     }
 
-    pdfkit.from_string(
-        smg,
-        f"media/{receipt_time + '-' +str(random.randint(100,999))}",
-        options=options,
-    )
+    pdf_out_path = f"media/{receipt_time[0:10] + '-' +receipt_time[11:16]+ '-' + str(random.randint(100,999))}"
 
-    template = render(request, "receipt.html", context)
-    return template
+    pdfkit.from_string(smg,pdf_out_path,options=options)
+
+    qr = qrcode.make(f'http://localhost:8000/{pdf_out_path}')
+    qr_image_io = io.BytesIO()
+    qr.save(qr_image_io, format='PNG')
+    qr_image_base64 = base64.b64encode(qr_image_io.getvalue()).decode()
+
+    tm = env.get_template("qr.html")
+    context_qr = {
+        "qr": qr_image_base64,
+    }
+    rendered_template = tm.render(context=context_qr)
+    return HttpResponse(rendered_template)
+
+@api_view(["GET"])
+def media_file_view(request, file_name):
+    file_path = f'media/{file_name}'
+    try:
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{file_name}"'
+            return response
+    except FileNotFoundError:
+        return Response({"error": f"File {file_name} not found"}, status=404)
+
