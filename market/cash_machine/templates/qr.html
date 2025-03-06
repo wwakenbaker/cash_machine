@@ -2,9 +2,35 @@
 <html>
 <head>
     <title>QR Code</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .qr-container {
+            margin: 20px auto;
+        }
+        .link-container {
+            margin-top: 20px;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>QR Code</h1>
-    <img id="qr-image" src="data:image/png;base64,{{ qr }}" alt="QR Code">
+    <h1>QR Code для чека</h1>
+    <div class="qr-container">
+        <img id="qr-image" src="data:image/png;base64,{{ qr }}" alt="QR Code">
+    </div>
+    <div class="link-container">
+        <p>Отсканируйте QR-код или перейдите по <a href="{{ pdf_url }}" target="_blank">этой ссылке</a> для просмотра чека</p>
+    </div>
 </body>
 </html>
