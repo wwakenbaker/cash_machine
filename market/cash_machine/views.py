@@ -75,7 +75,8 @@ def make_receipts(request):
 
     """ Генерируем local ip """
     hostname = socket.gethostname()
-    local_ip = socket.gethostbyname(hostname)
+    #local_ip = socket.gethostbyname(hostname)
+    local_ip = "192.168.0.150" # ip моего virtualbox
 
     """ Генерируем QR код """
     file_name = pdf_out_path.replace("media/", "")
@@ -95,7 +96,7 @@ def make_receipts(request):
 
 
 @api_view(["GET"])
-def media_file_view(file_name):
+def media_file_view(request, file_name):
     """
     Возвращает PDF чек по его имени из /media
     """
