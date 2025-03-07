@@ -9,6 +9,7 @@ def make_receipts_view(request):
     """
     Создаёт чек по списку
     На вход подается список с Item.id
+    Возвращает HTML шаблон с QR кодом
     """
     items_ids = request.data.get("items", [])
     return HttpResponse(make_recipe(items_ids))
