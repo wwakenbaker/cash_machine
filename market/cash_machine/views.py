@@ -34,7 +34,7 @@ def make_receipts(request):
             quantity[item.id] = quantity.get(item.id, 0) + 1
 
     """ Вычисляется общая стоимость """
-    total_price = sum(float(item.price) for item in items)
+    total_price = sum(item.price for item in items)
 
     """ Умножает цену на количество """
     for item in items:
@@ -90,6 +90,7 @@ def make_receipts(request):
     tm = env.get_template("qr.html")
     context_qr = {
         "qr": qr_image_base64,
+        "pdf_url": qr_url,
     }
     rendered_template = tm.render(context=context_qr)
     return HttpResponse(rendered_template)
