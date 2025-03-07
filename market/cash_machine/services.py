@@ -68,8 +68,8 @@ def make_recipe(items_ids):
 
     """ Генерируем local ip """
     hostname = socket.gethostname()
-    # local_ip = socket.gethostbyname(hostname)
-    local_ip = "192.168.0.150"  # ip моего virtualbox
+    local_ip = socket.gethostbyname(hostname)
+    # local_ip = "192.168.0.150"  # ip моего virtualbox
 
     """ Генерируем QR код """
     file_name = pdf_out_path.replace("media/", "")
@@ -90,6 +90,7 @@ def make_recipe(items_ids):
 
 
 def get_media_file(file_name):
+
     file_path = f"media/{file_name}"
     try:
         with open(file_path, "rb") as f:
